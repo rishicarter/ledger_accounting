@@ -65,19 +65,14 @@ def preprocess(df: pd.DataFrame):
     
     return df1
 
-def load_df():
+def load_df(dfs_list):
     dfs = []
-    for root, dirs, files in os.walk(DATA_PATH):
-        for file in files:
-            if file.endswith(".csv"):
-                file_path = os.path.join(root, file)
-    
-                df = pd.read_csv(file_path)
-                df = preprocess(df)
-                dfs.append(df)
+    for df in dfs_list:
+        df = preprocess(df)
+        dfs.append(df)
     
     df = pd.concat(dfs, ignore_index=True)
-    df.to_csv(OUTPUT_PATH+OUT_FILENAME, index=False)
+    # df.to_csv(OUTPUT_PATH+OUT_FILENAME, index=False)
     return df
     
 
@@ -85,13 +80,12 @@ uploaded_file = st.file_uploader("Upload a Ledger file", type=['xlsx'])
 if uploaded_file is not None:
     excel_data = pd.ExcelFile(uploaded_file)
     sheet_names = excel_data.sheet_names
-    
+    dfs = []
     for sheet_name in sheet_names:
         df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
-        csv_file_name = f"{DATA_PATH + sheet_name}.csv"
-        df.to_csv(csv_file_name, index=False)
+        dfs.append(df)
     try:
-        ledger_df = load_df()
+        ledger_df = load_df(dfs)
     except:
         st.write("Excel format not compatible...")
 
