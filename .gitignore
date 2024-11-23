@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+*.xlsx
+*csv
+.streamlit/
+secrets.toml
+
 # Distribution / packaging
 .Python
 build/
